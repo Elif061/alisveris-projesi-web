@@ -1,14 +1,24 @@
-/// src/pages/Login.jsx
+// src/pages/Login.jsx
 import React, { useState } from "react";
-import { TextField, Button, Typography, Container, Link } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Link,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // 👈 Buraya dikkat
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,11 +26,11 @@ const Login = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // E-posta doğrulama kontrolü
       if (!user.emailVerified) {
         alert("Lütfen e-posta adresinizi doğrulayın!");
         return;
       }
+      localStorage.setItem("user", JSON.stringify(user));
 
       alert("Giriş başarılı!");
       navigate("/home");
@@ -49,11 +59,20 @@ const Login = () => {
         <TextField
           fullWidth
           label="Şifre"
-          type="password"
+          type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           margin="normal"
           required
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
 
         <Button
@@ -83,3 +102,5 @@ const Login = () => {
 };
 
 export default Login;
+
+

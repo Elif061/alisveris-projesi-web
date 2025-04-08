@@ -55,9 +55,9 @@ const Navbar = () => {
 
         {/* Sağdaki Butonlar */}
         <Box sx={{ display: "flex", gap: 2 }}>
-        <Button color="inherit">📉 Fiyatı Düşenler</Button>
+          <Button color="inherit">📉 Fiyatı Düşenler</Button>
           <Button color="inherit">❤️ Favoriler</Button>
-          <Button color="inherit" onClick={() => navigate("/register")}>
+          <Button color="inherit" onClick={() => navigate("/login")}>
             👤 Giriş Yap
           </Button>
           <Button color="inherit">🛒 Sepetim</Button>
