@@ -1,11 +1,4 @@
-// src/pages/ResetPassword.jsx
 import React, { useState } from "react";
-import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -26,31 +19,57 @@ const ResetPassword = () => {
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: "50px" }}>
-      <Typography variant="h5" align="center" gutterBottom>
-        Şifre Sıfırlama
-      </Typography>
-      <form onSubmit={handleReset}>
-        <TextField
-          fullWidth
-          label="E-posta"
+    <div style={styles.container}>
+      <h2 style={styles.heading}>🔐 Şifre Sıfırlama</h2>
+      <form onSubmit={handleReset} style={styles.form}>
+        <input
           type="email"
+          placeholder="E-posta adresinizi girin"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          margin="normal"
           required
+          style={styles.input}
         />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 2, backgroundColor: "#001F3F" }}
-        >
-          Şifre Sıfırlama Bağlantısı Gönder
-        </Button>
+        <button type="submit" style={styles.button}>
+          📧 Şifre Sıfırlama Bağlantısı Gönder
+        </button>
       </form>
-    </Container>
+    </div>
   );
+};
+
+const styles = {
+  container: {
+    maxWidth: 400,
+    margin: "60px auto",
+    padding: 20,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    textAlign: "center",
+  },
+  heading: {
+    marginBottom: 20,
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+  input: {
+    padding: 10,
+    fontSize: 14,
+    borderRadius: 4,
+    border: "1px solid #ccc",
+    width: "100%",
+  },
+  button: {
+    backgroundColor: "#001F3F",
+    color: "white",
+    padding: 10,
+    border: "none",
+    borderRadius: 4,
+    cursor: "pointer",
+  },
 };
 
 export default ResetPassword;

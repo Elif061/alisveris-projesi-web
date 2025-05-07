@@ -1,17 +1,8 @@
-// src/pages/Register.jsx
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  Container,
-  Typography,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // 👈 React Icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -25,59 +16,95 @@ const Register = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
       alert("Kayıt başarılı! E-posta adresinize doğrulama bağlantısı gönderildi.");
-      navigate("/"); // Login sayfasına yönlendir
+      navigate("/"); // Giriş sayfasına yönlendir
     } catch (error) {
       alert("Kayıt başarısız: " + error.message);
     }
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: "50px" }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        Kayıt Ol
-      </Typography>
-
-      <form onSubmit={handleRegister}>
-        <TextField
-          fullWidth
-          label="E-posta"
+    <div style={styles.container}>
+      <h2 style={styles.heading}>Kayıt Ol</h2>
+      <form onSubmit={handleRegister} style={styles.form}>
+        <input
           type="email"
+          placeholder="E-posta"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          margin="normal"
           required
+          style={styles.input}
         />
 
-        <TextField
-          fullWidth
-          label="Şifre"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          margin="normal"
-          required
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+        <div style={styles.passwordContainer}>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Şifre"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={{ ...styles.input, marginBottom: 0 }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={styles.iconButton}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
+        </div>
 
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 2, backgroundColor: "#001F3F" }}
-        >
-          Kayıt Ol
-        </Button>
+        <button type="submit" style={styles.button}>Kayıt Ol</button>
       </form>
-    </Container>
+    </div>
   );
+};
+
+const styles = {
+  container: {
+    maxWidth: 400,
+    margin: "60px auto",
+    padding: 20,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    textAlign: "center",
+  },
+  heading: {
+    marginBottom: 20,
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+  input: {
+    padding: 10,
+    fontSize: 14,
+    borderRadius: 4,
+    border: "1px solid #ccc",
+    width: "100%",
+  },
+  passwordContainer: {
+    position: "relative",
+    marginBottom: 12,
+  },
+  iconButton: {
+    position: "absolute",
+    top: "50%",
+    right: 10,
+    transform: "translateY(-50%)",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 18,
+  },
+  button: {
+    backgroundColor: "#001F3F",
+    color: "white",
+    padding: 10,
+    border: "none",
+    borderRadius: 4,
+    cursor: "pointer",
+  },
 };
 
 export default Register;

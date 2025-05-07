@@ -5,6 +5,11 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import Navbar from "./components/Navbar";
+import ShoppingList from "./pages/ShoppingList";
+
+// ✅ Kategori sayfaları eklendi
+import MeyveSebze from "./pages/MeyveSebze";
+import EtTavukBalik from "./pages/EtTavukBalik";
 
 // Bu bileşenin içinde navigate ve useEffect kullanılacak
 const AppWrapper = () => {
@@ -41,6 +46,11 @@ const AppWrapper = () => {
             </div>
           }
         />
+        <Route path="/shopping-list" element={<ShoppingList />} />
+
+        {/* ✅ Kategori rotaları */}
+        <Route path="/kategori/meyve-sebze" element={<MeyveSebze />} />
+        <Route path="/kategori/et-tavuk-balik" element={<EtTavukBalik />} />
       </Routes>
     </>
   );
@@ -56,3 +66,4 @@ const App = () => {
 };
 
 export default App;
+

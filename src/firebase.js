@@ -1,9 +1,8 @@
-// src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCWFY1HHUWIaY1sJwZbRKtN4MB5Ll6dcE",
+  apiKey: "AIzaSyCVWFY1HHUWIaY1sJwZbRKIn4MB5L16dcE",
   authDomain: "alisveris-web.firebaseapp.com",
   projectId: "alisveris-web",
   storageBucket: "alisveris-web.appspot.com",
