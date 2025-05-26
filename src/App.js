@@ -1,69 +1,63 @@
-// src/App.js
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+// Sayfalar
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
-import Navbar from "./components/Navbar";
+import SearchPage from "./pages/SearchPage";
 import ShoppingList from "./pages/ShoppingList";
-
-// ✅ Kategori sayfaları eklendi
 import MeyveSebze from "./pages/MeyveSebze";
 import EtTavukBalik from "./pages/EtTavukBalik";
+import HomeContent from "./components/HomeContent";
+import FoodCatalog from "./pages/FoodCatalog";
+import Favoriler from "./pages/Favoriler";
+import SutKahvaltilik from "./pages/SutKahvaltilik";
+import TemelGida from "./pages/TemelGida";
+import Icecek from "./pages/Icecek";
+import Atistirmalik from "./pages/Atistirmalik";
+import DeterjanTemizlik from "./pages/DeterjanTemizlik";
+import KisiselBakim from "./pages/KisiselBakim";
 
-// Bu bileşenin içinde navigate ve useEffect kullanılacak
-const AppWrapper = () => {
-  const navigate = useNavigate();
+// Bileşen
+import Navbar from "./components/Navbar";
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      navigate("/home");
-    }
-  }, []);
-
-  return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div style={{ padding: 40 }}>
-              {/* İleride broşür, tanıtım vs buraya gelir */}
-            </div>
-          }
-        />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route
-          path="/home"
-          element={
-            <div style={{ textAlign: "center", marginTop: "50px" }}>
-              <h2>Hoş geldin!</h2>
-              <p>Girişin başarılı 🎉</p>
-            </div>
-          }
-        />
-        <Route path="/shopping-list" element={<ShoppingList />} />
-
-        {/* ✅ Kategori rotaları */}
-        <Route path="/kategori/meyve-sebze" element={<MeyveSebze />} />
-        <Route path="/kategori/et-tavuk-balik" element={<EtTavukBalik />} />
-      </Routes>
-    </>
-  );
-};
-
-// Router'ı burada sarmalıyoruz
 const App = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
     <Router>
-      <AppWrapper />
+      {user && <Navbar />}
+      <Routes>
+        {/* Giriş Sayfası */}
+        <Route path="/" element={!user ? <Login /> : <Navigate to="/home" />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+        {/* Ana Sayfa */}
+        <Route path="/home" element={user ? <HomeContent /> : <Navigate to="/" />} />
+
+        {/* Kategoriler */}
+        <Route path="/kategori/meyve-sebze" element={user ? <MeyveSebze /> : <Navigate to="/" />} />
+        <Route path="/kategori/et-tavuk-balik" element={user ? <EtTavukBalik /> : <Navigate to="/" />} />
+        <Route path="/kategori/sut-kahvaltilik" element={user ? <SutKahvaltilik /> : <Navigate to="/" />} />
+        <Route path="/kategori/temel-gida" element={user ? <TemelGida /> : <Navigate to="/" />} />
+        <Route path="/kategori/icecek" element={user ? <Icecek /> : <Navigate to="/" />} />
+        <Route path="/kategori/atistirmalik" element={user ? <Atistirmalik /> : <Navigate to="/" />} />
+        <Route path="/kategori/deterjan-temizlik" element={user ? <DeterjanTemizlik /> : <Navigate to="/" />} />
+        <Route path="/kategori/kisisel-bakim" element={user ? <KisiselBakim /> : <Navigate to="/" />} />
+
+        {/* Diğer Sayfalar */}
+        <Route path="/arama" element={user ? <SearchPage /> : <Navigate to="/" />} />
+        <Route path="/shopping-list" element={user ? <ShoppingList /> : <Navigate to="/" />} />
+        <Route path="/katalog" element={user ? <FoodCatalog /> : <Navigate to="/" />} />
+        <Route path="/favoriler" element={user ? <Favoriler /> : <Navigate to="/" />} />
+
+        {/* Tanımsız rota */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </Router>
   );
 };
 
 export default App;
-

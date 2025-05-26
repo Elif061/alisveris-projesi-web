@@ -3,7 +3,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { FaHeart } from "react-icons/fa";
 
-const EtTavukBalik = () => {
+const Icecek = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -11,7 +11,7 @@ const EtTavukBalik = () => {
     setLoading(true);
     const q = query(
       collection(db, "urunler"),
-      where("kategori", "==", "et-tavuk-balik"),
+      where("kategori", "==", "icecek"),
       where("market", "==", marketName)
     );
     const snapshot = await getDocs(q);
@@ -37,9 +37,12 @@ const EtTavukBalik = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>🍗 Et - Tavuk - Balık Ürünleri</h2>
+    <div style={{ padding: "40px 20px" }}>
+      <h2 style={{ fontSize: "24px", marginBottom: "20px" }}>
+        🥤 İçecek Ürünleri
+      </h2>
 
+      {/* Market Butonları */}
       <button onClick={() => getProducts("Migros")} style={styles.button}>
         🛒 Migros
       </button>
@@ -52,7 +55,7 @@ const EtTavukBalik = () => {
       <div style={styles.urunListesi}>
         {products.map((product, index) => (
           <div key={index} style={styles.urunKart}>
-            {/* 🔔 İndirim etiketi */}
+            {/* İndirim Etiketi */}
             {product.indirimdeMi && (
               <span style={styles.etiket}>🔔 İndirimde!</span>
             )}
@@ -82,7 +85,7 @@ const EtTavukBalik = () => {
             )}
             <h4 style={{ textTransform: "lowercase" }}>{product.ad}</h4>
 
-            {/* Fiyat gösterimi */}
+            {/* Fiyat alanı */}
             {product.indirimdeMi && product.eskiFiyat ? (
               <p>
                 <span style={{ textDecoration: "line-through", color: "#888", marginRight: 8 }}>
@@ -172,4 +175,4 @@ const styles = {
   },
 };
 
-export default EtTavukBalik;
+export default Icecek;

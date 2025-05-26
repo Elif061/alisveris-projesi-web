@@ -23,7 +23,7 @@ const ShoppingList = () => {
   };
 
   return (
-    <div style={{ padding: 20, backgroundColor: "#fef1ff", minHeight: "100vh" }}>
+    <div style={{ padding: 20, backgroundColor: "#ffffff", minHeight: "100vh" }}>
       <button
         onClick={() => navigate(-1)}
         style={{

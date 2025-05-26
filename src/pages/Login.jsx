@@ -12,20 +12,24 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      if (!user.emailVerified) {
-        alert("Lütfen e-posta adresinizi doğrulayın!");
-        return;
-      }
-
+      // Kullanıcı bilgisini localStorage'a kaydet
       localStorage.setItem("user", JSON.stringify(user));
-      alert("Giriş başarılı!");
-      navigate("/home");
+
+      alert("🎉 Giriş başarılı!");
+      navigate("/home"); // Ana sayfaya yönlendir
     } catch (error) {
-      alert("Giriş başarısız: " + error.message);
+      if (error.code === "auth/user-not-found") {
+        alert("Kullanıcı bulunamadı. Lütfen kayıt olun.");
+      } else if (error.code === "auth/wrong-password") {
+        alert("Şifre yanlış.");
+      } else {
+        alert("Giriş başarısız: " + error.message);
+      }
     }
   };
 
@@ -41,6 +45,7 @@ const Login = () => {
           required
           style={styles.input}
         />
+
         <div style={styles.passwordContainer}>
           <input
             type={showPassword ? "text" : "password"}
@@ -135,5 +140,3 @@ const styles = {
 };
 
 export default Login;
-
-

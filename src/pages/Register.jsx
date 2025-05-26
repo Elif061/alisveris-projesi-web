@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -12,13 +12,23 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    if (password.length < 6) {
+      alert("Şifre en az 6 karakter olmalı.");
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailVerification(userCredential.user);
-      alert("Kayıt başarılı! E-posta adresinize doğrulama bağlantısı gönderildi.");
-      navigate("/"); // Giriş sayfasına yönlendir
+      alert("Kayıt başarılı!");
+      localStorage.setItem("user", JSON.stringify(userCredential.user));
+      navigate("/home");
     } catch (error) {
-      alert("Kayıt başarısız: " + error.message);
+      if (error.code === "auth/email-already-in-use") {
+        alert("Bu e-posta zaten kayıtlı.");
+      } else {
+        alert("Hata: " + error.message);
+      }
     }
   };
 

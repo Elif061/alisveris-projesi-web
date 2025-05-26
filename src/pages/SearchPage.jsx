@@ -1,22 +1,36 @@
-import React, { useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { FaHeart } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 
-const EtTavukBalik = () => {
-  const [products, setProducts] = useState([]);
+const SearchPage = () => {
+  const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
 
-  const getProducts = async (marketName) => {
+  useEffect(() => {
+    const query = location.state?.query || "";
+    if (query.trim() !== "") {
+      setSearchTerm(query);
+      handleSearch(query);
+    }
+  }, [location.state?.query]);
+
+  const handleSearch = async (queryText) => {
     setLoading(true);
-    const q = query(
-      collection(db, "urunler"),
-      where("kategori", "==", "et-tavuk-balik"),
-      where("market", "==", marketName)
+    setSearched(true);
+
+    const snapshot = await getDocs(collection(db, "urunler"));
+    const allData = snapshot.docs.map((doc) => doc.data());
+
+    const filtered = allData.filter((item) =>
+      item.ad.toLowerCase().includes(queryText.toLowerCase())
     );
-    const snapshot = await getDocs(q);
-    const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setProducts(data);
+
+    setResults(filtered);
     setLoading(false);
   };
 
@@ -38,30 +52,26 @@ const EtTavukBalik = () => {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>🍗 Et - Tavuk - Balık Ürünleri</h2>
-
-      <button onClick={() => getProducts("Migros")} style={styles.button}>
-        🛒 Migros
-      </button>
-      <button onClick={() => getProducts("A101")} style={styles.button}>
-        🛒 A101
-      </button>
+      <h2>🔍 Arama Sonuçları</h2>
 
       {loading && <p>Yükleniyor...</p>}
 
+      {!loading && searched && results.length === 0 && (
+        <p>❗ Aradığınız ürün bulunamadı.</p>
+      )}
+
       <div style={styles.urunListesi}>
-        {products.map((product, index) => (
+        {results.map((product, index) => (
           <div key={index} style={styles.urunKart}>
             {/* 🔔 İndirim etiketi */}
             {product.indirimdeMi && (
               <span style={styles.etiket}>🔔 İndirimde!</span>
             )}
 
-            {/* Market Logosu */}
+            {/* Market logosu */}
             <img
               src={`/images/markets/${product.market.toLowerCase()}.png`}
               alt={product.market}
-              title={product.market}
               style={styles.logo}
             />
 
@@ -80,22 +90,17 @@ const EtTavukBalik = () => {
                 style={styles.gorsel}
               />
             )}
+
             <h4 style={{ textTransform: "lowercase" }}>{product.ad}</h4>
 
             {/* Fiyat gösterimi */}
             {product.indirimdeMi && product.eskiFiyat ? (
               <p>
-                <span style={{ textDecoration: "line-through", color: "#888", marginRight: 8 }}>
-                  {product.eskiFiyat} TL
-                </span>
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {product.fiyat} TL 🔻
-                </span>
+                <span style={styles.eskiFiyat}>{product.eskiFiyat} TL</span>
+                <span style={styles.yeniFiyat}>{product.fiyat} TL 🔻</span>
               </p>
             ) : (
-              <p style={{ fontWeight: "bold", fontSize: "16px" }}>
-                {product.fiyat} TL
-              </p>
+              <p style={styles.normalFiyat}>{product.fiyat} TL</p>
             )}
           </div>
         ))}
@@ -105,15 +110,6 @@ const EtTavukBalik = () => {
 };
 
 const styles = {
-  button: {
-    margin: 10,
-    padding: "10px 20px",
-    backgroundColor: "#001F3F",
-    color: "white",
-    border: "none",
-    borderRadius: 4,
-    cursor: "pointer",
-  },
   urunListesi: {
     display: "flex",
     flexWrap: "wrap",
@@ -165,11 +161,21 @@ const styles = {
     padding: "4px 8px",
     borderRadius: "6px",
     fontSize: "12px",
-    display: "flex",
-    alignItems: "center",
-    gap: "5px",
     zIndex: 1,
+  },
+  eskiFiyat: {
+    textDecoration: "line-through",
+    color: "#888",
+    marginRight: 8,
+  },
+  yeniFiyat: {
+    color: "green",
+    fontWeight: "bold",
+  },
+  normalFiyat: {
+    fontWeight: "bold",
+    fontSize: "16px",
   },
 };
 
-export default EtTavukBalik;
+export default SearchPage;

@@ -3,7 +3,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { FaHeart } from "react-icons/fa";
 
-const EtTavukBalik = () => {
+const SutKahvaltilik = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -11,7 +11,7 @@ const EtTavukBalik = () => {
     setLoading(true);
     const q = query(
       collection(db, "urunler"),
-      where("kategori", "==", "et-tavuk-balik"),
+      where("kategori", "==", "sut-kahvaltilik"),
       where("market", "==", marketName)
     );
     const snapshot = await getDocs(q);
@@ -37,8 +37,10 @@ const EtTavukBalik = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>🍗 Et - Tavuk - Balık Ürünleri</h2>
+    <div style={{ padding: "40px 20px" }}>
+      <h2 style={{ fontSize: "24px", marginBottom: "20px" }}>
+        🧀 Süt-Kahvaltılık Ürünler
+      </h2>
 
       <button onClick={() => getProducts("Migros")} style={styles.button}>
         🛒 Migros
@@ -52,7 +54,7 @@ const EtTavukBalik = () => {
       <div style={styles.urunListesi}>
         {products.map((product, index) => (
           <div key={index} style={styles.urunKart}>
-            {/* 🔔 İndirim etiketi */}
+            {/* 🔔 İndirim Etiketi */}
             {product.indirimdeMi && (
               <span style={styles.etiket}>🔔 İndirimde!</span>
             )}
@@ -80,22 +82,17 @@ const EtTavukBalik = () => {
                 style={styles.gorsel}
               />
             )}
+
             <h4 style={{ textTransform: "lowercase" }}>{product.ad}</h4>
 
             {/* Fiyat gösterimi */}
             {product.indirimdeMi && product.eskiFiyat ? (
               <p>
-                <span style={{ textDecoration: "line-through", color: "#888", marginRight: 8 }}>
-                  {product.eskiFiyat} TL
-                </span>
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {product.fiyat} TL 🔻
-                </span>
+                <span style={styles.eskiFiyat}>{product.eskiFiyat} TL</span>
+                <span style={styles.yeniFiyat}>{product.fiyat} TL 🔻</span>
               </p>
             ) : (
-              <p style={{ fontWeight: "bold", fontSize: "16px" }}>
-                {product.fiyat} TL
-              </p>
+              <p style={styles.normalFiyat}>{product.fiyat} TL</p>
             )}
           </div>
         ))}
@@ -170,6 +167,19 @@ const styles = {
     gap: "5px",
     zIndex: 1,
   },
+  eskiFiyat: {
+    textDecoration: "line-through",
+    color: "#888",
+    marginRight: 8,
+  },
+  yeniFiyat: {
+    color: "green",
+    fontWeight: "bold",
+  },
+  normalFiyat: {
+    fontWeight: "bold",
+    fontSize: "16px",
+  },
 };
 
-export default EtTavukBalik;
+export default SutKahvaltilik;
